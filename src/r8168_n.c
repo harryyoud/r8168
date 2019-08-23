@@ -88,7 +88,7 @@
 #include "rtl_eeprom.h"
 #include "rtltool.h"
 
-#ifdef ENABLE_R8168_PROCFS
+#ifdef CONFIG_R8168_PROCFS
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 #endif
@@ -345,32 +345,32 @@ static unsigned int advertising_mode =  ADVERTISED_10baseT_Half |
                                         ADVERTISED_100baseT_Full |
                                         ADVERTISED_1000baseT_Half |
                                         ADVERTISED_1000baseT_Full;
-#ifdef CONFIG_ASPM
+#ifdef CONFIG_R8168_ASPM
 static int aspm = 1;
 #else
 static int aspm = 0;
 #endif
-#ifdef ENABLE_S5WOL
+#ifdef CONFIG_R8168_S5WOL
 static int s5wol = 1;
 #else
 static int s5wol = 0;
 #endif
-#ifdef ENABLE_S5_KEEP_CURR_MAC
+#ifdef CONFIG_R8168_S5_KEEP_CURR_MAC
 static int s5_keep_curr_mac = 1;
 #else
 static int s5_keep_curr_mac = 0;
 #endif
-#ifdef ENABLE_EEE
+#ifdef CONFIG_R8168_EEE
 static int eee_enable = 1;
 #else
 static int eee_enable = 0;
 #endif
-#ifdef CONFIG_SOC_LAN
+#ifdef CONFIG_R8168_SOC_LAN
 static ulong hwoptimize = HW_PATCH_SOC_LAN;
 #else
 static ulong hwoptimize = 0;
 #endif
-#ifdef ENABLE_S0_MAGIC_PACKET
+#ifdef CONFIG_R8168_S0_MAGIC_PACKET
 static int s0_magic_packet = 1;
 #else
 static int s0_magic_packet = 0;
@@ -808,7 +808,7 @@ struct rtl8168_counters {
         u16 tx_underun;
 };
 
-#ifdef ENABLE_R8168_PROCFS
+#ifdef CONFIG_R8168_PROCFS
 /****************************************************************************
 *   -----------------------------PROCFS STUFF-------------------------
 *****************************************************************************
@@ -1721,7 +1721,7 @@ static void rtl8168_proc_remove(struct net_device *dev)
         }
 }
 
-#endif //ENABLE_R8168_PROCFS
+#endif //CONFIG_R8168_PROCFS
 
 static inline u16 map_phy_ocp_addr(u16 PageNum, u8 RegNum)
 {
@@ -3222,7 +3222,7 @@ update_device_state:
         }
 }
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
 
 inline void
 rtl8168_enable_dash2_interrupt(struct rtl8168_private *tp)
@@ -3250,7 +3250,7 @@ rtl8168_enable_hw_interrupt(struct rtl8168_private *tp)
 {
         RTL_W16(tp, IntrMask, tp->intr_mask);
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
         if (tp->DASH)
                 rtl8168_enable_dash2_interrupt(tp);
 #endif
@@ -3261,7 +3261,7 @@ rtl8168_disable_hw_interrupt(struct rtl8168_private *tp)
 {
         RTL_W16(tp, IntrMask, 0x0000);
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
         if (tp->DASH)
                 rtl8168_disable_dash2_interrupt(tp);
 #endif
@@ -3284,7 +3284,7 @@ rtl8168_switch_to_timer_interrupt(struct rtl8168_private *tp)
                 RTL_W32(tp, TCTR, timer_count);
                 RTL_W16(tp, IntrMask, tp->timer_intr_mask);
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
                 if (tp->DASH)
                         rtl8168_enable_dash2_interrupt(tp);
 #endif
@@ -3297,7 +3297,7 @@ static void
 rtl8168_irq_mask_and_ack(struct rtl8168_private *tp)
 {
         rtl8168_disable_hw_interrupt(tp);
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
         if (tp->DASH) {
                 if (tp->dash_printer_enabled) {
                         RTL_W16(tp, IntrStatus, RTL_R16(tp, IntrStatus) &
@@ -3671,7 +3671,7 @@ rtl8168_issue_offset_99_event(struct rtl8168_private *tp)
         }
 }
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
 static void
 NICChkTypeEnableDashInterrupt(struct rtl8168_private *tp)
 {
@@ -3695,13 +3695,13 @@ rtl8168_check_link_status(struct net_device *dev)
         struct rtl8168_private *tp = netdev_priv(dev);
         int link_status_on;
 
-#ifdef ENABLE_FIBER_SUPPORT
+#ifdef CONFIG_R8168_FIBER_SUPPORT
         rtl8168_check_fiber_link_status(dev);
-#endif //ENABLE_FIBER_SUPPORT
+#endif //CONFIG_R8168_FIBER_SUPPORT
 
-#ifdef ENABLE_FIBER_SUPPORT
+#ifdef CONFIG_R8168_FIBER_SUPPORT
         rtl8168_check_fiber_link_status(dev);
-#endif //ENABLE_FIBER_SUPPORT
+#endif //CONFIG_R8168_FIBER_SUPPORT
 
         link_status_on = tp->link_ok(dev);
 
@@ -3831,7 +3831,7 @@ rtl8168_check_link_status(struct net_device *dev)
                                 break;
                         }
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
                         if (tp->DASH) {
                                 NICChkTypeEnableDashInterrupt(tp);
                         }
@@ -4342,7 +4342,7 @@ rtl8168_hw_d3_para(struct net_device *dev)
                 break;
         }
 
-#ifdef ENABLE_REALWOW_SUPPORT
+#ifdef CONFIG_R8168_REALWOW_SUPPORT
         rtl8168_set_realwow_d3_para(dev);
 #endif
 
@@ -4576,10 +4576,10 @@ rtl8168_powerdown_pll(struct net_device *dev)
 {
         struct rtl8168_private *tp = netdev_priv(dev);
 
-#ifdef ENABLE_FIBER_SUPPORT
+#ifdef CONFIG_R8168_FIBER_SUPPORT
         if (HW_FIBER_MODE_ENABLED(tp))
                 return;
-#endif //ENABLE_FIBER_SUPPORT
+#endif //CONFIG_R8168_FIBER_SUPPORT
 
         if (tp->wol_enabled == WOL_ENABLED || tp->DASH || tp->EnableKCPOffload) {
                 int auto_nego;
@@ -4611,7 +4611,7 @@ rtl8168_powerdown_pll(struct net_device *dev)
                 else
                         anlpar = rtl8168_mdio_read(tp, MII_LPA);
 
-#ifdef CONFIG_DOWN_SPEED_100
+#ifdef CONFIG_R8168_DOWN_SPEED_100
                 auto_nego |= (ADVERTISE_100FULL | ADVERTISE_100HALF | ADVERTISE_10HALF | ADVERTISE_10FULL);
 #else
                 if (anlpar & (LPA_10HALF | LPA_10FULL))
@@ -6881,7 +6881,7 @@ rtl8168_exit_oob(struct net_device *dev)
 
         if (HW_DASH_SUPPORT_DASH(tp)) {
                 rtl8168_driver_start(tp);
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
                 DashHwInit(dev);
 #endif
         }
@@ -6912,7 +6912,7 @@ rtl8168_exit_oob(struct net_device *dev)
                 break;
         }
 
-#ifdef ENABLE_REALWOW_SUPPORT
+#ifdef CONFIG_R8168_REALWOW_SUPPORT
         rtl8168_realwow_hw_init(dev);
 #else
         switch (tp->mcfg) {
@@ -6942,7 +6942,7 @@ rtl8168_exit_oob(struct net_device *dev)
         }
         break;
         }
-#endif //ENABLE_REALWOW_SUPPORT
+#endif //CONFIG_R8168_REALWOW_SUPPORT
 
         rtl8168_nic_reset(dev);
 
@@ -6995,10 +6995,10 @@ rtl8168_exit_oob(struct net_device *dev)
                 break;
         };
 
-#ifdef ENABLE_FIBER_SUPPORT
+#ifdef CONFIG_R8168_FIBER_SUPPORT
         if (HW_FIBER_MODE_ENABLED(tp))
                 rtl8168_hw_init_fiber_nic(dev);
-#endif //ENABLE_FIBER_SUPPORT
+#endif //CONFIG_R8168_FIBER_SUPPORT
 
         tp->phy_reg_anlpar = 0;
 }
@@ -23705,10 +23705,10 @@ rtl8168_hw_phy_config(struct net_device *dev)
                 }
         }
 
-#ifdef ENABLE_FIBER_SUPPORT
+#ifdef CONFIG_R8168_FIBER_SUPPORT
         if (HW_FIBER_MODE_ENABLED(tp))
                 rtl8168_hw_fiber_phy_config(dev);
-#endif //ENABLE_FIBER_SUPPORT
+#endif //CONFIG_R8168_FIBER_SUPPORT
 
         //EthPhyPPSW
         if (tp->mcfg == CFG_METHOD_21 || tp->mcfg == CFG_METHOD_22 ||
@@ -23974,9 +23974,9 @@ rtl8168_init_software_variable(struct net_device *dev)
                 break;
         }
 
-#ifdef ENABLE_REALWOW_SUPPORT
+#ifdef CONFIG_R8168_REALWOW_SUPPORT
         rtl8168_get_realwow_hw_version(dev);
-#endif //ENABLE_REALWOW_SUPPORT
+#endif //CONFIG_R8168_REALWOW_SUPPORT
 
         if (HW_DASH_SUPPORT_DASH(tp) && rtl8168_check_dash(tp))
                 tp->DASH = 1;
@@ -24009,16 +24009,16 @@ rtl8168_init_software_variable(struct net_device *dev)
                 }
         }
 
-#ifdef ENABLE_DASH_SUPPORT
-#ifdef ENABLE_DASH_PRINTER_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_PRINTER_SUPPORT
         if (tp->DASH) {
                 if (HW_DASH_SUPPORT_TYPE_3(tp) && tp->HwPkgDet == 0x0F)
                         tp->dash_printer_enabled = 1;
                 else if (HW_DASH_SUPPORT_TYPE_2(tp))
                         tp->dash_printer_enabled = 1;
         }
-#endif //ENABLE_DASH_PRINTER_SUPPORT
-#endif //ENABLE_DASH_SUPPORT
+#endif //CONFIG_R8168_DASH_PRINTER_SUPPORT
+#endif //CONFIG_R8168_DASH_SUPPORT
 
         if (HW_DASH_SUPPORT_TYPE_2(tp))
                 tp->cmac_ioaddr = tp->mmio_addr;
@@ -24042,7 +24042,7 @@ rtl8168_init_software_variable(struct net_device *dev)
                 break;
         }
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
         if (tp->DASH) {
                 if (HW_DASH_SUPPORT_TYPE_2(tp) || HW_DASH_SUPPORT_TYPE_3(tp)) {
                         tp->timer_intr_mask |= ( ISRIMR_DASH_INTR_EN | ISRIMR_DASH_INTR_CMAC_RESET);
@@ -24185,7 +24185,7 @@ rtl8168_init_software_variable(struct net_device *dev)
         break;
         }
 
-#ifdef ENABLE_FIBER_SUPPORT
+#ifdef CONFIG_R8168_FIBER_SUPPORT
         switch(tp->mcfg) {
         case CFG_METHOD_29:
         case CFG_METHOD_30:
@@ -24206,7 +24206,7 @@ rtl8168_init_software_variable(struct net_device *dev)
 
         if (tp->HwFiberStat != FIBER_STAT_CONNECT)
                 tp->HwFiberModeVer = FIBER_MODE_NIC_ONLY;
-#endif //ENABLE_FIBER_SUPPORT
+#endif //CONFIG_R8168_FIBER_SUPPORT
 
         if (pdev->subsystem_vendor == 0x144d) {
                 if (pdev->subsystem_device == 0xc098 ||
@@ -24229,14 +24229,14 @@ rtl8168_init_software_variable(struct net_device *dev)
                         break;
                 }
         }
-#ifdef ENABLE_FIBER_SUPPORT
+#ifdef CONFIG_R8168_FIBER_SUPPORT
         switch (tp->HwFiberModeVer) {
         case FIBER_MODE_RTL8168H_RTL8211FS:
         case FIBER_MODE_RTL8168H_MDI_SWITCH_RTL8211FS:
                 tp->RequiredSecLanDonglePatch = TRUE;
                 break;
         }
-#endif //ENABLE_FIBER_SUPPORT
+#endif //CONFIG_R8168_FIBER_SUPPORT
 
         switch (tp->mcfg) {
         case CFG_METHOD_16:
@@ -24395,7 +24395,7 @@ rtl8168_release_board(struct pci_dev *pdev,
         if (!tp->DASH)
                 rtl8168_phy_power_down(dev);
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
         if (tp->DASH)
                 FreeAllocatedDashShareMemory(dev);
 #endif
@@ -25270,7 +25270,7 @@ rtl8168_do_ioctl(struct net_device *dev,
                 ret = rtl8168_asf_ioctl(dev, ifr);
                 break;
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
         case SIOCDEVPRIVATE_RTLDASH:
                 if (!netif_running(dev)) {
                         ret = -ENODEV;
@@ -25285,7 +25285,7 @@ rtl8168_do_ioctl(struct net_device *dev,
                 break;
 #endif
 
-#ifdef ENABLE_REALWOW_SUPPORT
+#ifdef CONFIG_R8168_REALWOW_SUPPORT
         case SIOCDEVPRIVATE_RTLREALWOW:
                 if (!netif_running(dev)) {
                         ret = -ENODEV;
@@ -25955,7 +25955,7 @@ rtl8168_init_one(struct pci_dev *pdev,
 
         rtl8168_init_software_variable(dev);
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
         if (tp->DASH)
                 AllocateDashShareMemory(dev);
 #endif
@@ -25980,7 +25980,7 @@ rtl8168_init_one(struct pci_dev *pdev,
 
         rtl8168_get_mac_address(dev);
 
-#if defined(ENABLE_DASH_PRINTER_SUPPORT)
+#if defined(CONFIG_R8168_DASH_PRINTER_SUPPORT)
         init_completion(&tp->fw_host_ok);
         init_completion(&tp->fw_ack);
         init_completion(&tp->fw_req);
@@ -26047,7 +26047,7 @@ rtl8168_remove_one(struct pci_dev *pdev)
 
         unregister_netdev(dev);
         rtl8168_disable_msi(pdev, tp);
-#ifdef ENABLE_R8168_PROCFS
+#ifdef CONFIG_R8168_PROCFS
         rtl8168_proc_remove(dev);
 #endif
         if (tp->tally_vaddr != NULL) {
@@ -26077,7 +26077,7 @@ static int rtl8168_open(struct net_device *dev)
 
         retval = -ENOMEM;
 
-#ifdef ENABLE_R8168_PROCFS
+#ifdef CONFIG_R8168_PROCFS
         rtl8168_proc_init(dev);
 #endif
         rtl8168_set_rxbufsize(tp, dev);
@@ -27344,7 +27344,7 @@ rtl8168_hw_config(struct net_device *dev)
         /* Set Rx packet filter */
         rtl8168_hw_set_rx_packet_filter(dev);
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
         if (tp->DASH && !tp->dash_printer_enabled)
                 NICChkTypeEnableDashInterrupt(tp);
 #endif
@@ -28652,7 +28652,7 @@ static irqreturn_t rtl8168_interrupt(int irq, void *dev_instance)
                         }
                 }
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
                 if ( tp->DASH ) {
                         if (HW_DASH_SUPPORT_TYPE_2(tp) || HW_DASH_SUPPORT_TYPE_3(tp)) {
                                 u8 DashIntType2Status;
@@ -28713,7 +28713,7 @@ static irqreturn_t rtl8168_interrupt(int irq, void *dev_instance)
 #endif  //LINUX_VERSION_CODE < KERNEL_VERSION(2,6,24)
                         rtl8168_tx_interrupt(dev, tp);
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
                         if ( tp->DASH ) {
                                 struct net_device *dev = tp->dev;
 
@@ -28751,7 +28751,7 @@ static int rtl8168_poll(napi_ptr napi, napi_budget budget)
         RTL_NAPI_QUOTA_UPDATE(dev, work_done, budget);
 
         if (work_done < work_to_do) {
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
                 if ( tp->DASH ) {
                         struct net_device *dev = tp->dev;
 
@@ -28899,9 +28899,9 @@ static void rtl8168_shutdown(struct pci_dev *pdev)
         if (s5_keep_curr_mac == 0 && tp->random_mac == 0)
                 rtl8168_rar_set(tp, tp->org_mac_addr);
 
-#ifdef ENABLE_FIBER_SUPPORT
+#ifdef CONFIG_R8168_FIBER_SUPPORT
         rtl8168_hw_fiber_nic_d3_para(dev);
-#endif  //ENABLE_FIBER_SUPPORT
+#endif  //CONFIG_R8168_FIBER_SUPPORT
 
         if (s5wol == 0)
                 tp->wol_enabled = WOL_DISABLED;
@@ -28973,9 +28973,9 @@ rtl8168_suspend(struct pci_dev *pdev, pm_message_t state)
 
         rtl8168_hw_d3_para(dev);
 
-#ifdef ENABLE_FIBER_SUPPORT
+#ifdef CONFIG_R8168_FIBER_SUPPORT
         rtl8168_hw_fiber_nic_d3_para(dev);
-#endif  //ENABLE_FIBER_SUPPORT
+#endif  //CONFIG_R8168_FIBER_SUPPORT
 
         rtl8168_powerdown_pll(dev);
 
@@ -29078,7 +29078,7 @@ static struct pci_driver rtl8168_pci_driver = {
 static int __init
 rtl8168_init_module(void)
 {
-#ifdef ENABLE_R8168_PROCFS
+#ifdef CONFIG_R8168_PROCFS
         rtl8168_proc_module_init();
 #endif
 #if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,0)
@@ -29092,7 +29092,7 @@ static void __exit
 rtl8168_cleanup_module(void)
 {
         pci_unregister_driver(&rtl8168_pci_driver);
-#ifdef ENABLE_R8168_PROCFS
+#ifdef CONFIG_R8168_PROCFS
         if (rtl8168_proc) {
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
                 remove_proc_subtree(MODULENAME, init_net.proc_net);

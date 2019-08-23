@@ -148,7 +148,7 @@ do { \
 #endif
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,37)
-#define ENABLE_R8168_PROCFS
+#define CONFIG_R8168_PROCFS
 #endif
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
@@ -317,19 +317,19 @@ do { \
 #else
 #define NAPI_SUFFIX ""
 #endif
-#ifdef ENABLE_FIBER_SUPPORT
+#ifdef CONFIG_R8168_FIBER_SUPPORT
 #define FIBER_SUFFIX "-FIBER"
 #else
 #define FIBER_SUFFIX ""
 #endif
-#ifdef ENABLE_REALWOW_SUPPORT
+#ifdef CONFIG_R8168_REALWOW_SUPPORT
 #define REALWOW_SUFFIX "-REALWOW"
 #else
 #define REALWOW_SUFFIX ""
 #endif
-#if defined(ENABLE_DASH_PRINTER_SUPPORT)
+#if defined(CONFIG_R8168_DASH_PRINTER_SUPPORT)
 #define DASH_SUFFIX "-PRINTER"
-#elif defined(ENABLE_DASH_SUPPORT)
+#elif defined(CONFIG_R8168_DASH_SUPPORT)
 #define DASH_SUFFIX "-DASH"
 #else
 #define DASH_SUFFIX ""
@@ -1596,7 +1596,7 @@ struct rtl8168_private {
         void __iomem *mapped_cmac_ioaddr; /* mapped cmac memory map physical address */
         void __iomem *cmac_ioaddr; /* cmac memory map physical address */
 
-#ifdef ENABLE_DASH_SUPPORT
+#ifdef CONFIG_R8168_DASH_SUPPORT
         u16 AfterRecvFromFwBufLen;
         u8 AfterRecvFromFwBuf[RECV_FROM_FW_BUF_SIZE];
         u16 AfterSendToFwBufLen;
@@ -1657,13 +1657,13 @@ struct rtl8168_private {
         u8 CmacOobIssueCmacReset ;
         u32 CmacResetbyFwCnt;
 
-#if defined(ENABLE_DASH_PRINTER_SUPPORT)
+#if defined(CONFIG_R8168_DASH_PRINTER_SUPPORT)
         struct completion fw_ack;
         struct completion fw_req;
         struct completion fw_host_ok;
 #endif
         //Dash-----------------
-#endif //ENABLE_DASH_SUPPORT
+#endif //CONFIG_R8168_DASH_SUPPORT
 
         //Realwow++++++++++++++
         u8 HwSuppKCPOffloadVer;
@@ -1671,16 +1671,16 @@ struct rtl8168_private {
         u8 EnableDhcpTimeoutWake;
         u8 EnableTeredoOffload;
         u8 EnableKCPOffload;
-#ifdef ENABLE_REALWOW_SUPPORT
+#ifdef CONFIG_R8168_REALWOW_SUPPORT
         u32 DhcpTimeout;
         MP_KCP_INFO MpKCPInfo;
         //Realwow--------------
-#endif //ENABLE_REALWOW_SUPPORT
+#endif //CONFIG_R8168_REALWOW_SUPPORT
 
         u32 eee_adv_t;
         u8 eee_enabled;
 
-#ifdef ENABLE_R8168_PROCFS
+#ifdef CONFIG_R8168_PROCFS
         //Procfs support
         struct proc_dir_entry *proc_dir;
 #endif
